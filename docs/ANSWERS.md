@@ -60,8 +60,6 @@ La première étape consiste à mettre en place l'environnement de travail.
 // Mettre à jour le fichier requirements.txt
 pip freeze > requirements.txt
 
-// Créer le fichier de config des librairies précédemment installées
-mkdir setup.cfg
 ```
 
 ### Étape 2 - Description de la Solution
@@ -139,16 +137,29 @@ Un fichier `Makefile` a été ajouté afin de permettre à l'utilisateur de lanc
 - lancer et arrêter l'architecture micro-services.
 
 ````
-// run test
->>> make test
 // run coverage
 >>> make cov
-// run architecture micro-service
+
+// run test
+>>> make pytest
+
+// run formating checks
+>>> make format-check
+
+// run formating corections
+>>> make format-apply
+
+// set architecture up
 >>> make up
+
+// set architecture down
 >>> make down
+
 // visualiser lárboresence du repo
 >>> make tree
 ````
+
+Pour s'assurer de la bonnne exécution des ETLs un volume est monté entre le container gentETL et data/. Ainsi les ETLs ecrirons des csv visible dans le dossier data.
 
 ### Limitations de la Solution
 
@@ -227,3 +238,63 @@ En bleu :
 Pour automatiser le réentraînement, je commencerais par appliquer un seuil de réentraînement sur la performance de l'inference Job. Si l'inférence dépasse le seuil, alors j'activerais l'agent d'entraînement afin qu'il réentraîne le modèle, qu'il compare les performances du nouveau modèle à celui en production, et remplace ou non le modèle de production par le nouveau dans le modèle Registry.
 
 ![Schema Simplifié Architecture Active Learning](/technical-test-data-engineer/docs/schema-simple-archi.jpg)
+
+
+
+### Annexe :
+
+````
+.
+├── Changelog.md                 # Historique des modifications du projet, documentant les mises à jour et corrections de version.
+├── README.md                    # Documentation de base du projet, incluant les instructions d'installation, de configuration, et d'utilisation.
+├── data                         # Dossier pour stocker les données brutes ou temporaires utilisées par les ETLs.
+├── docker-compose.yaml          # Fichier de configuration pour Docker Compose, orchestrant les services dans un environnement de conteneur.
+├── docs                         # Dossier pour la documentation supplémentaire du projet.
+│   ├── ANSWERS.md               # Document pour répondre à des questions techniques ou des tests, souvent lié au projet.
+│   └── schema-simple-archi.jpg  # Schéma de l'architecture simplifiée, en image pour visualiser les composants du système.
+├── micro-services               # Dossier contenant les microservices du projet.
+│   ├── agentETL                 # Microservice dédié à l'exécution des tâches ETL.
+│   │   ├── Dockerfile           # Fichier de configuration pour construire l'image Docker de l'agent ETL.
+│   │   ├── crontab              # Fichier de configuration des tâches cron pour planifier les ETLs.
+│   │   ├── requirements.txt     # Liste des dépendances Python pour le microservice agent ETL.
+│   │   └── src                  # Code source de l'agent ETL.
+│   │       ├── __init__.py      # Indicateur que le dossier `src` est un module Python.
+│   │       └── etls             # Sous-dossier pour les scripts ETL spécifiques.
+│   │           ├── __init__.py  # Indicateur que le dossier `etls` est un module Python.
+│   │           ├── etl_base.py  # Script définissant la classe de base pour les ETLs, incluant des méthodes communes.
+│   │           ├── etl_listen_history.py  # Script ETL pour traiter les données d'historique d'écoute.
+│   │           ├── etl_tracks.py          # Script ETL pour traiter les données des pistes.
+│   │           ├── etl_users.py           # Script ETL pour traiter les données des utilisateurs.
+│   │           └── utils.py               # Fonctions utilitaires utilisées par les scripts ETL.
+│   └── fastAPI                  # Microservice pour l'API FastAPI.
+│       ├── Dockerfile           # Fichier de configuration pour construire l'image Docker du microservice FastAPI.
+│       └── requirements.txt     # Liste des dépendances Python pour le microservice FastAPI.
+├── requirements.txt             # Liste globale des dépendances Python pour l'ensemble du projet.
+├── setup.cfg                    # Fichier de configuration pour le packaging et les réglages du projet (par ex., pour linting, imports).
+├── src                          # Code source principal du projet.
+│   ├── __init__.py              # Indicateur que le dossier `src` est un module Python.
+│   ├── dags                     # Dossier contenant les DAGs Airflow pour l'orchestration des ETLs.
+│   │   ├── __init__.py          # Indicateur que le dossier `dags` est un module Python.
+│   │   ├── history_etl_dag.py   # DAG Airflow pour orchestrer le flux de données de l'historique d'écoute.
+│   │   ├── tracks_etl_dag.py    # DAG Airflow pour orchestrer le flux de données des pistes.
+│   │   └── users_etl_dag.py     # DAG Airflow pour orchestrer le flux de données des utilisateurs.
+│   ├── etls                     # Dossier pour les scripts ETL.
+│   │   ├── __init__.py          # Indicateur que le dossier `etls` est un module Python.
+│   │   ├── etl_base.py          # Script définissant la classe de base pour les ETLs, incluant des méthodes communes.
+│   │   ├── etl_listen_history.py # Script ETL pour traiter les données d'historique d'écoute.
+│   │   ├── etl_tracks.py         # Script ETL pour traiter les données des pistes.
+│   │   ├── etl_users.py          # Script ETL pour traiter les données des utilisateurs.
+│   │   └── utils.py              # Fonctions utilitaires utilisées par les scripts ETL.
+│   └── moovitamix_fastapi        # Application FastAPI pour exposer des endpoints liés aux données Moovitamix.
+│       ├── __init__.py           # Indicateur que le dossier `moovitamix_fastapi` est un module Python.
+│       ├── classes_out.py        # Définitions de classes pour la sortie des données via l'API.
+│       ├── generate_fake_data.py # Script pour générer des données factices pour tester l'API.
+│       └── main.py               # Point d'entrée de l'API FastAPI.
+└── test                          # Dossier contenant les tests unitaires du projet.
+    ├── __init__.py               # Indicateur que le dossier `test` est un module Python.
+    ├── test_classes_out.py       # Test unitaire pour le module `classes_out.py`.
+    ├── test_etl_base.py          # Test unitaire pour le module `etl_base.py`.
+    ├── test_etl_listen_history.py # Test unitaire pour le script `etl_listen_history.py`.
+    ├── test_etl_tracks.py         # Test unitaire pour le script `etl_tracks.py`.
+    └── test_etl_users.py          # Test unitaire pour le script `etl_users.py`.
+````

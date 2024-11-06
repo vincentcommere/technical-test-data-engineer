@@ -1,6 +1,7 @@
 import pandas as pd
 
 from src.etls.etl_base import BaseETL
+
 # from etl_base import BaseETL
 
 
@@ -14,7 +15,7 @@ class TracksETL(BaseETL):
         host: str = "http://127.0.0.1",
         port: int = 8000,
         endpoint: str = "/tracks",
-        load_path = '../../data/tracks.csv'
+        load_path="../../data/tracks.csv",
     ) -> None:
         """
         Initializes the TracksETL instance with default or provided values.
@@ -49,11 +50,12 @@ class TracksETL(BaseETL):
 
 
 if __name__ == "__main__":
-    
+
     from datetime import datetime
+
     # Generate a timestamp
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     # Create filename with timestamp
     load_path = f"/app/data/tracks-{timestamp}.csv"
-    tetl = TracksETL(host='http://fastapi_service', load_path = load_path)
+    tetl = TracksETL(host="http://fastapi_service", load_path=load_path)
     tetl()

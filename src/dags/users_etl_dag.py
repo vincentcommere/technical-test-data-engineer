@@ -12,12 +12,15 @@ from src.etls.etl_users import UsersETL
 
 etl = UsersETL()
 
+
 # Define functions to execute each part of the ETL process
 def run_etl_first_task() -> None:
     etl.extract()
 
+
 def run_etl_second_task() -> None:
     etl.transform()
+
 
 def run_etl_third_task() -> None:
     etl.load()
@@ -44,18 +47,15 @@ with DAG(
 ) as dag:
 
     etl_first_task = PythonOperator(
-        task_id="run_etl_first_task",
-        python_callable=run_etl_first_task
+        task_id="run_etl_first_task", python_callable=run_etl_first_task
     )
-    
+
     etl_second_task = PythonOperator(
-        task_id="run_etl_second_task",
-        python_callable=run_etl_second_task
+        task_id="run_etl_second_task", python_callable=run_etl_second_task
     )
-    
+
     etl_third_task = PythonOperator(
-        task_id="run_etl_third_task",
-        python_callable=run_etl_third_task
+        task_id="run_etl_third_task", python_callable=run_etl_third_task
     )
 
     # Set task dependencies

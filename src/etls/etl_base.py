@@ -1,7 +1,10 @@
-import requests
-import pandas as pd
 from typing import Optional
+
+import pandas as pd
+import requests
+
 from src.etls.utils import logger
+
 # from utils import logger
 
 
@@ -16,8 +19,7 @@ class BaseETL:
         host: Optional[str] = None,
         port: Optional[int] = None,
         endpoint: Optional[str] = None,
-        load_path: Optional[str] = None
-
+        load_path: Optional[str] = None,
     ) -> None:
         """
         Initializes the BaseETL with host, port, and endpoint.
@@ -37,7 +39,7 @@ class BaseETL:
         self.port = port
         self.endpoint = endpoint
         self.load_path = load_path
-        
+
         self.url = f"{self.host}:{self.port}{self.endpoint}"
         self.logger = logger
 
@@ -49,7 +51,9 @@ class BaseETL:
         self.health_check()
         df = self.extract()
         transformed_df = self.transform(df)
-        self.load(transformed_df, )
+        self.load(
+            transformed_df,
+        )
 
     def _extract_health_check(self) -> bool:
         """
@@ -80,7 +84,7 @@ class BaseETL:
             bool: True if the SQL database is reachable, False otherwise.
         """
         return True
-    
+
     def _check_schema(self, df) -> pd.DataFrame:
         """
         Placeholder for checking Data Source Schema Stability.
@@ -121,10 +125,10 @@ class BaseETL:
             data = response.json()
             df = pd.DataFrame(data)
             logger.info("Data extraction successful")
-            
+
             df = self._check_schema(df)
             df = self._check_nan(df)
-            
+
             logger.info("Data source Stability Check successful")
 
             return df
@@ -149,12 +153,12 @@ class BaseETL:
         if df.empty:
             self.logger.warning("DataFrame is empty. No data to load.")
             raise ValueError("Cannot load an empty DataFrame.")
-        
+
         # Check for duplicate rows
         if df.duplicated().any():
             self.logger.warning("DataFrame contains duplicate rows.")
             raise ValueError("Cannot load DataFrame with duplicate rows.")
-        
+
         # Save to CSV
         df.to_csv(self.load_path, index=False)
         self.logger.info(f"Data successfully saved to {self.load_path}")

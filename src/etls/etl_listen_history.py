@@ -1,6 +1,7 @@
 import pandas as pd
 
 from src.etls.etl_base import BaseETL
+
 # from etl_base import BaseETL
 
 
@@ -14,7 +15,7 @@ class HistoryETL(BaseETL):
         host: str = "http://127.0.0.1",
         port: int = 8000,
         endpoint: str = "/listen_history",
-        load_path = '../../data/listen_history.csv'
+        load_path="../../data/listen_history.csv",
     ) -> None:
         """
         Initializes the HistoryETL instance with default or provided values.
@@ -25,7 +26,7 @@ class HistoryETL(BaseETL):
             endpoint (str): The specific endpoint path.
         """
         super().__init__(host=host, port=port, endpoint=endpoint, load_path=load_path)
-    
+
     def transform(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         Transforms the extracted data by expanding nested JSON structures.
@@ -49,16 +50,16 @@ class HistoryETL(BaseETL):
         self.logger.debug(expanded_df.head())  # Log the first few rows to verify
 
         return expanded_df
-    
-       
+
 
 if __name__ == "__main__":
-    
+
     from datetime import datetime
+
     # Generate a timestamp
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
     # Create filename with timestamp
     load_path = f"/app/data/listen_history-{timestamp}.csv"
-    
-    hetl = HistoryETL(host='http://fastapi_service', load_path = load_path)
+
+    hetl = HistoryETL(host="http://fastapi_service", load_path=load_path)
     hetl()
