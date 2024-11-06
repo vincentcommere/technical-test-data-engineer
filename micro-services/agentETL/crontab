@@ -1,0 +1,6 @@
+# crontab file
+
+# Run each script every minute, redirecting output to the log file
+* * * * * /usr/local/bin/python3 /app/src/etl_listen_history.py >> /var/log/cron.log 2>&1
+* * * * * /usr/local/bin/python3 /app/src/etl_tracks.py >> /var/log/cron.log 2>&1
+* * * * * /usr/local/bin/python3 /app/src/etl_users.py >> /var/log/cron.log 2>&1

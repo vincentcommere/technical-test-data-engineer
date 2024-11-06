@@ -1,0 +1,29 @@
+
+services:
+
+  fastapi_service:
+    build:
+      context: .
+      dockerfile: ./micro-services/fastAPI/Dockerfile  # Adjust the path if needed
+    container_name: fastapi_service
+    ports:
+      - "8000:8000"  # Expose FastAPI on port 8000
+    networks:
+      - my_network
+    restart: always
+
+  etl_service:
+    build:
+      context: .
+      dockerfile: ./micro-services/agentETL/Dockerfile
+    container_name: etl_service
+    volumes:
+      - ./data:/app/data  # Mount data files if needed
+    networks:
+      - my_network
+    restart: always
+
+
+networks:
+  my_network:
+    driver: bridge

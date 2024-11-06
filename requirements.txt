@@ -3,3 +3,10 @@ fastapi
 uvicorn
 fastapi_pagination
 pytest
+flake8
+black
+isort
+pandas
+requests
+apache-airflow
+pytest-cov
