@@ -1,0 +1,30 @@
+name: CD - Continious Deployment
+
+on:
+  release:
+    types: [published, prereleased]
+
+jobs:
+
+  # lint-testing:
+  #   if: ${{ vars.LINT_TESTING == 'true'}}
+  #   uses: ./.github/workflows/1-lint-testing.yaml
+
+  madatory:
+    name: madatory
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+  build-run-publish:
+    if: ${{ vars.PUBLISH_DOCKER_HUB == 'true'}}
+    uses: ./.github/workflows/2-build-run-publish.yaml
+    secrets:
+      docker-username: ${{ secrets.DOCKER_HUB_USERNAME }}
+      docker-password: ${{ secrets.DOCKER_HUB_PASSWORD }}
+      docker-repository: ${{ secrets.DOCKER_HUB_REPOSITORY }}
+      aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      aws-region: ${{ secrets.AWS_REGION }}
+      aws-ecr-repository: ${{ secrets.AWS_ECR_REPOSITORY }}

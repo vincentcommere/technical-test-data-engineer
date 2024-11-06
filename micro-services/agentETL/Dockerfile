@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y cron
 WORKDIR /app
 
 # Copy your ETL scripts into the container
-COPY src/etls/ /app/src/
+COPY micro-services/agentETL/src/etls/ /app/src/
 
 # Install dependencies
 COPY micro-services/agentETL/requirements.txt /app/requirements.txt

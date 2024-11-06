@@ -1,0 +1,45 @@
+name: Integration Testing
+
+on:
+  workflow_call:
+    inputs:
+      runner:
+        required: false
+        type: string
+        default: ${{ vars.RUNNER }}
+
+jobs:
+
+  integration-test-job:
+    runs-on: ${{ inputs.runner }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip setuptools wheel pytest coverage
+
+      - name: Install project dependencies
+        working-directory: ${{ vars.APP_DIR }}
+        run: |
+          pip install -r requirements.txt
+
+      - name: Start Flask application
+        working-directory: ${{ vars.APP_DIR }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ vars.AWS_SECRET_ACCESS_KEY }}
+        run: python app.py &
+
+      - name: Wait for Flask application to start
+        run: sleep 5  # Adjust sleep duration as needed
+
+      - name: Run Integration Tests
+        working-directory: ${{ vars.APP_DIR }}
+        run: |
+          sh tests/integration_test/endpoints_jwt_tests.sh 

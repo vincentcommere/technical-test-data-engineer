@@ -146,11 +146,13 @@ Un fichier `Makefile` a été ajouté afin de permettre à l'utilisateur de lanc
 // run architecture micro-service
 >>> make up
 >>> make down
+// visualiser lárboresence du repo
+>>> make tree
 ````
 
 ### Limitations de la Solution
 
-- **Code** : les checks et tests de stabilité et de quelité des données on volontairement ete simplifié. Dansun context clients il est bon de sássurer des la regle a suivre vis a vis des cas marginaux comme les doublons par exemple.
+- **Code** : les checks et tests de stabilité et de qualité des données on volontairement ete simplifié. Dans un context clients il est bon de s'assurer des règles à suivre vis-a-vis des cas marginaux comme les doublons par exemple.
 - **Dockerfile** : Dockerfile simple, pas prêt pour la production, absence de layer d'authentification.
 - **Tests unitaires et couverture** > 40%
 - **Orchestration** : Utilisation des cron jobs dans un container à des fins de simplicité et de démonstration de compétences système et microservices.
@@ -158,8 +160,8 @@ Un fichier `Makefile` a été ajouté afin de permettre à l'utilisateur de lanc
 ### Bonus et Extra
 
 - **Architecture** : Utilisation de Docker Compose à des fins de démonstration, mais non conseillé en production car c'est une architecture microservices single machine.
-- **CI/CD**  : Quelques exemples de fichiers de configuration du pipeline CI/CD à des fins de checks de linting, de tests unitaires et d'intégration.
-
+- **CI/CD**  : Quelques exemples de fichiers de configuration du pipeline CI/CD à des fins de checks de linting, de tests unitaires et d'intégration. (./.github/)
+- **Airflow Dags files** : Un ensemble d'exemples de DAGs Airflow simplifiés a également été fourni à des fins de démonstration de compétences. (./src/dags/)
 
 ## Questions (étapes 4 à 7)
 

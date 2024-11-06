@@ -1,0 +1,27 @@
+name: CI - Continious Integration
+
+on:
+  push:
+    branche: [ main ]
+  pull_request:
+    branche: [ main ]
+
+jobs:
+
+# CI - Continious Integration
+
+  lint-testing:
+    if: ${{ vars.LINT_TESTING == 'true'}}
+    uses: ./.github/workflows/1-lint-testing.yaml
+
+  unit-testing:
+    if: ${{ vars.UNIT_TESTING == 'true'}}
+    needs: [ lint-testing ]
+    uses: ./.github/workflows/1-unit-testing.yaml
+    with:
+      coverage-min: 85
+
+  integration-testing: 
+    if: ${{ vars.INTEGRATION_TESTING == 'true'}}
+    needs: [ unit-testing ]
+    uses: ./.github/workflows/1-integration-testing.yaml

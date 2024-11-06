@@ -1,0 +1,39 @@
+name: Unit Testing
+
+on:
+  workflow_call:
+    inputs:
+      coverage-min:  
+        required: true
+        type: string
+      runner:
+        required: false
+        type: string
+        default: ${{ vars.RUNNER }}
+
+jobs:
+
+  unit-test-job:
+    runs-on: ${{ inputs.runner }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip setuptools wheel pytest pytest-cov
+
+      - name: Install project dependencies
+        working-directory: ${{ vars.APP_DIR }}
+        run: pip install -r requirements.txt
+
+      - name: Run pytest
+        working-directory: ${{ vars.APP_DIR }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{ vars.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ vars.AWS_SECRET_ACCESS_KEY }}
+        run: pytest --cov=./ --cov-fail-under=${{ inputs.coverage-min }}
